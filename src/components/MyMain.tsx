@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Result } from "../interface/IArticles";
-import { Container, Row } from "react-bootstrap";
+import { Alert, Container, Row, Spinner } from "react-bootstrap";
 import MyArticle from "./MyArticle";
 
 const MyMain = () => {
   const [articles, setArticles] = useState<Result[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const fetchArticles = () => {
     fetch("https://api.spaceflightnewsapi.net/v4/articles")
@@ -20,7 +22,9 @@ const MyMain = () => {
       })
       .catch((error) => {
         console.log(error);
-      });
+        setError(true);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -35,11 +39,21 @@ const MyMain = () => {
         </div>
       </Row>
 
-      <Row>
-        {articles.map((article) => (
-          <MyArticle key={article.id} article={article} />
-        ))}
-      </Row>
+      {loading && !error && (
+        <div className="text-center my-2">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      )}
+
+      {error && <Alert variant="danger">Errore nel reperimento dei dati</Alert>}
+
+      {!loading && !error && (
+        <Row>
+          {articles.map((article) => (
+            <MyArticle key={article.id} article={article} />
+          ))}
+        </Row>
+      )}
     </Container>
   );
 };

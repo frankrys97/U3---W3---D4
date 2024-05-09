@@ -1,0 +1,8 @@
+.textNavigate {
+  cursor: pointer;
+}
+
+.textNavigate:hover {
+  text-decoration: underline;
+  color: blue;
+}
